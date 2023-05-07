@@ -35,6 +35,9 @@ void DescriptorHeap::CommitSamplerHeap()
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
 	for (auto& ds : m_descriptorHeap) {
+		if (ds) {
+			ds->Release();
+		}
 		auto hr = d3dDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&ds));
 		if (FAILED(hr)) {
 			MessageBox(nullptr, L"DescriptorHeap::Commit ディスクリプタヒープの作成に失敗しました。", L"エラー", MB_OK);
@@ -66,6 +69,9 @@ void DescriptorHeap::Commit()
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
 	for (auto& ds : m_descriptorHeap) {
+		if (ds) {
+			ds->Release();
+		}
 		auto hr = d3dDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&ds));
 		g_numDescriptorHeap++;
 		if (FAILED(hr)) {
