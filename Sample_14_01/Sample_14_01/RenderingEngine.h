@@ -137,6 +137,8 @@ namespace myRenderer
             m_deferredLightingCB.m_light.directionalLight[lightNo].color = color;
         }
 
+        void CopyMainRenderTarget(RenderContext& rc, D3D12_CPU_DESCRIPTOR_HANDLE rtv, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
+
     private:
         /// <summary>
         /// G-Bufferを初期化

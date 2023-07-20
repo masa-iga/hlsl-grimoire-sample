@@ -369,4 +369,11 @@ namespace myRenderer
         rc.SetViewportAndScissor(viewport);
         m_copyMainRtToFrameBufferSprite.Draw(rc);
     }
+
+    void RenderingEngine::CopyMainRenderTarget(RenderContext& rc, D3D12_CPU_DESCRIPTOR_HANDLE rtv, D3D12_CPU_DESCRIPTOR_HANDLE dsv)
+    {
+        rc.SetRenderTarget(rtv, dsv);
+
+        m_copyMainRtToFrameBufferSprite.Draw(rc);
+    }
 }
