@@ -281,6 +281,7 @@ private:
 		GPU_VenderNvidia,	//NVIDIA
 		GPU_VenderAMD,		//Intel
 		GPU_VenderIntel,	//AMD
+		GPU_CaptureAdapter, //Grahics debugger
 		Num_GPUVender,
 	};
 	

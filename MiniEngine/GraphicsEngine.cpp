@@ -253,6 +253,13 @@ bool GraphicsEngine::CreateD3DDevice( IDXGIFactory4* dxgiFactory )
 			adapterVender[GPU_VenderIntel] = adapterTmp;
 			adapterVender[GPU_VenderIntel]->AddRef();
 		}
+		else if (wcsstr(desc.Description, L"Capture") != nullptr) {
+			if (adapterVender[GPU_CaptureAdapter]) {
+				adapterVender[GPU_CaptureAdapter]->Release();
+			}
+			adapterVender[GPU_CaptureAdapter] = adapterTmp;
+			adapterVender[GPU_CaptureAdapter]->AddRef();
+		}
 		adapterTmp->Release();
 	}
 	//使用するアダプターを決める。
@@ -263,6 +270,9 @@ bool GraphicsEngine::CreateD3DDevice( IDXGIFactory4* dxgiFactory )
 	else if (adapterVender[GPU_VenderAMD] != nullptr) {
 		//次はAMDが優先。
 		useAdapter = adapterVender[GPU_VenderAMD];
+	}
+	else if (adapterVender[GPU_VenderIntel] != nullptr) {
+		useAdapter = adapterVender[GPU_VenderIntel];
 	}
 	else {
 		//NVIDIAとAMDのGPUがなければビデオメモリが一番多いやつを使う。
