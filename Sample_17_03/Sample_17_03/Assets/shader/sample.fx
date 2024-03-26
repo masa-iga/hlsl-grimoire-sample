@@ -45,6 +45,7 @@ float2 GetUV(BuiltInTriangleIntersectionAttributes attribs);
 void shadowChs(inout RayPayload payload, in BuiltInTriangleIntersectionAttributes attribs)
 {
     // step-5 シャドウレイがポリゴンと衝突したときに衝突フラグを立てる
+    payload.hit = 1;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -54,6 +55,7 @@ void shadowChs(inout RayPayload payload, in BuiltInTriangleIntersectionAttribute
 void shadowMiss(inout RayPayload payload)
 {
     // step-6 シャドウレイがどのポリゴンとも衝突しない場合はフラグを下ろす
+    payload.hit = 0;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -69,12 +71,47 @@ void chs(inout RayPayload payload, in BuiltInTriangleIntersectionAttributes attr
     payload.color = g_albedoTexture.SampleLevel(g_samplerState,uv,0.0f);
 
     // step-2 レイとポリゴンの衝突点を求める
+    const float3 rayDirW = WorldRayDirection();
+    const float3 rayOriginW = WorldRayOrigin();
+    const float hitT = RayTCurrent();
+
+    const float3 hitPos = rayOriginW + (rayDirW * hitT);
 
     // step-3 シャドウレイを作る
+    RayDesc ray;
+    ray.Origin = hitPos;
+    ray.Direction = float3(0.5f, 0.5f, 0.2f);
+    ray.Direction = normalize(ray.Direction);
+    ray.TMin = 0.01f;
+    ray.TMax = 100;
 
     // step-4 シャドウレイを飛ばす
+    {
+        RaytracingAccelerationStructure accelerationStructure = g_raytracingWorld;
+        const uint rayFlags = 0;
+        const uint instanceInclusionMask = 0xFF;
+        const uint rayContributionToHitGroupIndex = 1;
+        const uint multiplierFo5rGeometryContributionToHitGroupIndex = 0;
+        const uint missShaderIndex = 1;
+        payload.hit = 0;
+
+        TraceRay(
+            accelerationStructure,
+            rayFlags,
+            instanceInclusionMask,
+            rayContributionToHitGroupIndex,
+            multiplierFo5rGeometryContributionToHitGroupIndex,
+            missShaderIndex,
+            ray,
+            payload
+        );
+    }
 
     // step-7 衝突フラグを調べて影を落とす
+    if (payload.hit == 1)
+    {
+        payload.color *= 0.5f;
+    }
 
 }
 
